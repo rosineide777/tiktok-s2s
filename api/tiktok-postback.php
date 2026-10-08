@@ -30,6 +30,14 @@ if (!$pixelId || !$accessToken) {
     exit;
 }
 
+$user = [
+    'external_id' => hash('sha256', $subid)
+];
+
+if ($ttclid !== '') {
+    $user['ttclid'] = $ttclid;
+}
+
 $payload = [
     'event_source' => 'web',
     'event_source_id' => $pixelId,
@@ -38,9 +46,7 @@ $payload = [
             'event' => 'Purchase',
             'event_time' => time(),
 
-            'user' => [
-                'external_id' => hash('sha256', $subid)
-            ],
+            'user' => $user,
 
             'page' => [
                 'url' => 'https://rosashopstore.vercel.app/'
