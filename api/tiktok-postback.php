@@ -3,6 +3,7 @@
 header('Content-Type: application/json; charset=utf-8');
 
 $subid = $_GET['subid'] ?? '';
+$ttclid = $_GET['ttclid'] ?? '';
 
 if ($subid === '') {
     http_response_code(400);
@@ -36,8 +37,13 @@ $payload = [
         [
             'event' => 'Purchase',
             'event_time' => time(),
+
             'user' => [
                 'external_id' => hash('sha256', $subid)
+            ],
+
+            'page' => [
+                'url' => 'https://rosashopstore.vercel.app/'
             ]
         ]
     ]
@@ -62,11 +68,10 @@ $response = curl_exec($ch);
 $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 $curlError = curl_error($ch);
 
-curl_close($ch);
-
 echo json_encode([
     'success' => $httpCode === 200 && $curlError === '',
     'tiktok_http_code' => $httpCode,
     'tiktok_response' => json_decode($response, true),
+    'payload_enviado' => $payload,
     'curl_error' => $curlError
 ]);
